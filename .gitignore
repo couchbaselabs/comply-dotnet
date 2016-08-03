@@ -1,0 +1,10 @@
+/public
+/target
+/angular/dist
+/angular/node_modules
+/angular/tmp
+/angular/public
+
+.DS_Store*
+.idea
+~*
