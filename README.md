@@ -39,7 +39,8 @@ Notice that the directory must be renamed to **public** at the root of the proje
 Before compiling the .NET code, the Couchbase Server information must be specified first.  In the project's **Web.config** file, take a look at the details:
 
 ```
-[todo]
+<add key="CouchbaseServer" value="couchbase://192.168.1.5" />
+<add key="CouchbaseBucket" value="comply" />
 ```
 
 Adjust the host and bucket information to match that of your own.
