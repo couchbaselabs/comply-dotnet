@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using ComplyWebApi.Models;
 using ComplyWebApi.Models.DataAccess;
 using ComplyWebApi.Models.DocumentModels;
@@ -12,6 +13,7 @@ using Couchbase;
 
 namespace ComplyWebApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ProjectController : ApiController
     {
         private readonly ProjectDataAccess _dataAccess;
@@ -23,7 +25,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("project/get/{projectId}")]
+        [Route("api/project/get/{projectId}")]
         public IHttpActionResult GetProjectById(string projectId)
         {
             if (string.IsNullOrEmpty(projectId))
@@ -32,7 +34,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("project/getAll/{ownerId}")]
+        [Route("api/project/getAll/{ownerId}")]
         public IHttpActionResult GetProjectsByOwnerId(string ownerId)
         {
             if (string.IsNullOrEmpty(ownerId))
@@ -41,14 +43,14 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("project/getAll")]
+        [Route("api/project/getAll")]
         public IHttpActionResult GetProjects()
         {
             return Ok(_dataAccess.GetProjects());
         }
 
         [HttpGet]
-        [Route("project/getOther/{userId}")]
+        [Route("api/project/getOther/{userId}")]
         public IHttpActionResult GetOtherProjectsByUserId(string userId)
         {
             if(string.IsNullOrEmpty(userId))
@@ -57,20 +59,18 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("project/getOther")]
+        [Route("api/project/getOther")]
         public IHttpActionResult GetOtherProjects()
         {
             return Ok(_dataAccess.GetProjects());
         }
 
         [HttpPost]
-        [Route("project/create")]
+        [Route("api/project/create")]
         public IHttpActionResult CreateProject(Project project)
         {
             if (string.IsNullOrEmpty(project.Owner))
                 return BadRequest("An owner must exist");
-            if (project.Users == null || !project.Users.Any())
-                return BadRequest("Users must exist");
             if (string.IsNullOrEmpty(project.Name))
                 return BadRequest("A name must exist");
             if (string.IsNullOrEmpty(project.Description))
@@ -86,7 +86,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpPost]
-        [Route("project/addUser")]
+        [Route("api/project/addUser")]
         public IHttpActionResult ProjectAddUser(ProjectAddUser projectAddUser)
         {
             if (string.IsNullOrEmpty(projectAddUser.Username))

@@ -25,16 +25,9 @@ The Angular 2 code is not dependent on .NET or the database.  To build the Angul
 
 ```sh
 npm install
-ng build
 ```
 
-The above commands will install the Angular 2 dependencies and build the **angular/src** to the **angular/dist** directory.  Copy this directory to the parent directory like the following:
-
-```sh
-cp -r angular/dist public
-```
-
-Notice that the directory must be renamed to **public** at the root of the project.
+The above commands will install the Angular 2 dependencies and build the **angular/src** to the **public** directory.
 
 Before compiling the .NET code, the Couchbase Server information must be specified first.  In the project's **Web.config** file, take a look at the details:
 
@@ -45,9 +38,29 @@ Before compiling the .NET code, the Couchbase Server information must be specifi
 
 Adjust the host and bucket information to match that of your own.
 
-To build the .NET project, open it in Visual Studio, and execute (F5/Ctrl+F5)e:
+To build the .NET project, open it in Visual Studio, and execute (F5/Ctrl+F5):
 
-Because this project makes use of N1QL, the bucket that you define must have at least one index.
+Once the .NET WebAPI project is running, you will need to tell the Angular project where to find the endpoints. Edit the utility.ts file and look in the makePostRequest and makeGetRequest methods.
+Replace "http://localhost:NNNNN" with whatever URL you are running the WebAPI project in. If you are lauching from Visual Studio, this would still be localhost but your port number may vary. NOTE: In a production environment, this might be a
+different domain, different subdomain, etc, from the where you are serving the Angular app from. There is no requirement that they exist on the same machine or even the same data center. (In fact,
+the WebAPI code in this demo has CORS enabled for any origin).
+
+Once that change is in place, build the Angular project and start serving it.
+
+```sh
+ng build —output-path=../public
+ng server
+```
+
+This will be served on http://localhost:4200/
+
+Because this project makes use of N1QL, the bucket that you define must have at least one index. This can be created by:
+
+```
+CREATE PRIMARY INDEX on `comply`
+```
+
+In a production environment, you would likely have several more secondary indexes to improve performance.
 
 ## Running the Project
 

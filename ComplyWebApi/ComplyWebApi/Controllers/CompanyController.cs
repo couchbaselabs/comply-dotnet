@@ -3,12 +3,14 @@ using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using ComplyWebApi.Models.DataAccess;
 using ComplyWebApi.Models.DocumentModels;
 using Couchbase;
 
 namespace ComplyWebApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class CompanyController : ApiController
     {
         private readonly CompanyDataAccess _dataAccess;
@@ -20,7 +22,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("company/get/{*companyId}")]
+        [Route("api/company/get/{*companyId}")]
         public IHttpActionResult GetCompanyById(string companyId)
         {
             if(string.IsNullOrEmpty(companyId))
@@ -29,14 +31,14 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("company/getAll")]
+        [Route("api/company/getAll")]
         public IHttpActionResult GetCompanies()
         {
             return Ok(_dataAccess.GetCompanies());
         }
 
         [HttpPost]
-        [Route("company/create")]
+        [Route("api/company/create")]
         public IHttpActionResult CreateCompany(Company company)
         {
             if (string.IsNullOrEmpty(company.Website))

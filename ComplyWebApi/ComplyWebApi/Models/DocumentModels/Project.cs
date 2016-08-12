@@ -4,6 +4,7 @@ namespace ComplyWebApi.Models.DocumentModels
 {
     public class Project
     {
+        public string _type { get; set; }
         public string _id { get; set; }
         public string CreatedOn { get; set; }
         public string Description { get; set; }

@@ -63,9 +63,10 @@ namespace ComplyWebApi.Models.DataAccess
         public Project CreateProject(Project project)
         {
             var documentId = Guid.NewGuid();
-            project.Users.Add(project.Owner);
+            project.Users = new List<string> { project.Owner };
             project._id = documentId.ToString();
             project.CreatedOn = DateTime.Now.ToShortDateString();
+            project._type = "Project";
             var document = new Document<Project>
             {
                 Id = documentId.ToString(),

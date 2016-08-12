@@ -1,10 +1,9 @@
 using System;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using ComplyWebApi.Models;
+using System.Web.Http.Cors;
 using ComplyWebApi.Models.DataAccess;
 using ComplyWebApi.Models.DocumentModels;
 using ComplyWebApi.Models.EditModels;
@@ -12,6 +11,7 @@ using Couchbase;
 
 namespace ComplyWebApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class TaskController : ApiController
     {
         private readonly TaskDataAccess _dataAccess;
@@ -24,7 +24,7 @@ namespace ComplyWebApi.Controllers
 
 
         [HttpGet]
-        [Route("task/get/{taskId}")]
+        [Route("api/task/get/{taskId}")]
         public IHttpActionResult GetTaskById(string taskId)
         {
             if(string.IsNullOrEmpty(taskId))
@@ -33,7 +33,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("task/getAssignedTo/{userId}")]
+        [Route("api/task/getAssignedTo/{userId}")]
         public IHttpActionResult GetTasksAssignedToUserId(string userId)
         {
             if(string.IsNullOrEmpty(userId))
@@ -42,11 +42,9 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpPost]
-        [Route("task/create/{projectId}")]
+        [Route("api/task/create/{projectId}")]
         public IHttpActionResult CreateTaskForProjectId(string projectId, Task task)
         {
-            if (task.Users == null || !task.Users.Any())
-                return BadRequest("Users must exist");
             if (string.IsNullOrEmpty(task.Owner))
                 return BadRequest("Users must exist");
             if (string.IsNullOrEmpty(projectId))
@@ -55,7 +53,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpPost]
-        [Route("task/addUser")]
+        [Route("api/task/addUser")]
         public IHttpActionResult TaskAddUser(TaskAddUser taskUser)
         {
             if (string.IsNullOrEmpty(taskUser.Username))
@@ -77,7 +75,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpPost]
-        [Route("task/assignUser")]
+        [Route("api/task/assignUser")]
         public IHttpActionResult TaskAssignUser(TaskAssignUser assignUser)
         {
             if (string.IsNullOrEmpty(assignUser.TaskId))
@@ -100,7 +98,7 @@ namespace ComplyWebApi.Controllers
 
 
         [HttpPost]
-        [Route("task/addHistory")]
+        [Route("api/task/addHistory")]
         public IHttpActionResult TaskAddHistory(TaskAddHistory addHistory)
         {
             if (string.IsNullOrEmpty(addHistory.TaskId))

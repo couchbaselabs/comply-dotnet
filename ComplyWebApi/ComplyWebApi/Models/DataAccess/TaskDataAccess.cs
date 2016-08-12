@@ -20,25 +20,6 @@ namespace ComplyWebApi.Models.DataAccess
 
         public List<dynamic> GetTaskById(string taskId)
         {
-            var queryStr = @"SELECT _id, 
-                                (SELECT a.* FROM `" + _bucket.Name + @"` a USE KEYS c.assignedTo)[0] AS assignedTo,
-                                createdON,
-                                description,
-                                history,
-                                name,
-                                (SELECT o.* FROM `" + _bucket.Name + @"` o USE KEYS c.owner)[0] as owner,
-                                (SELECT u.* FROM `" + _bucket.Name + @"` u USE KEYS c.users) AS users,
-                                permalink
-                            FROM `" + _bucket.Name + @"` c
-                            WHERE c.assignedTo = $1";
-            var query = QueryRequest.Create(queryStr);
-            query.AddPositionalParameter(taskId);
-            var queryResult = _bucket.Query<dynamic>(query);
-            return ExtractResultOrThrow(queryResult);
-        }
-
-        public List<dynamic> GetTasksAssignedToUserId(string userId)
-        {
             var queryStr = @"SELECT
                                 p._id AS projectId,
                                 (SELECT _id, 
@@ -57,6 +38,25 @@ namespace ComplyWebApi.Models.DataAccess
                             FROM `" + _bucket.Name + @"` p
                             WHERE ANY x IN tasks SATISFIES x = $1 END ";
             var query = QueryRequest.Create(queryStr);
+            query.AddPositionalParameter(taskId);
+            var queryResult = _bucket.Query<dynamic>(query);
+            return ExtractResultOrThrow(queryResult);
+        }
+
+        public List<dynamic> GetTasksAssignedToUserId(string userId)
+        {
+            var queryStr = @"SELECT _id, 
+                                (SELECT a.* FROM `" + _bucket.Name + @"` a USE KEYS c.assignedTo)[0] AS assignedTo,
+                                createdON,
+                                description,
+                                history,
+                                name,
+                                (SELECT o.* FROM `" + _bucket.Name + @"` o USE KEYS c.owner)[0] as owner,
+                                (SELECT u.* FROM `" + _bucket.Name + @"` u USE KEYS c.users) AS users,
+                                permalink
+                            FROM `" + _bucket.Name + @"` c
+                            WHERE c.assignedTo = $1";
+            var query = QueryRequest.Create(queryStr);
             query.AddPositionalParameter(userId);
             var queryResult = _bucket.Query<dynamic>(query);
             return ExtractResultOrThrow(queryResult);
@@ -66,10 +66,10 @@ namespace ComplyWebApi.Models.DataAccess
         {
             // create task
             var taskId = Guid.NewGuid().ToString();
-            task.Users.Add(task.Owner);
+            task.Users = new List<string> { task.Owner };
             task._id = taskId;
             task._type = "Task";
-            task.CreatedOn = DateTime.Now.ToShortDateString();
+            task.CreatedON = DateTime.Now.ToShortDateString();
             var taskDocument = new Document<dynamic>
             {
                 Id = taskId,

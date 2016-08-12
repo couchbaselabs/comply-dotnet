@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Authentication;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using ComplyWebApi.Models;
 using ComplyWebApi.Models.DataAccess;
 using ComplyWebApi.Models.DocumentModels;
@@ -11,6 +12,7 @@ using Couchbase;
 
 namespace ComplyWebApi.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
         private readonly UserDataAccess _dataAccess;
@@ -22,21 +24,21 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("user/get/{userId}")]
+        [Route("api/user/get/{userId}")]
         public IHttpActionResult GetUserById(string userId)
         {
             return Ok(_dataAccess.GetUserById(userId));
         }
 
         [HttpGet]
-        [Route("user/getAll")]
+        [Route("api/user/getAll")]
         public IHttpActionResult GetUsers()
         {
             return Ok(_dataAccess.GetUsers());
         }
 
         [HttpGet]
-        [Route("user/login/{username}/{password}")]
+        [Route("api/user/login/{username}/{password}")]
         public IHttpActionResult Login(string username, string password)
         {
             if (string.IsNullOrEmpty(username))
@@ -59,8 +61,8 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpPost]
-        [Route("user/create")]
-        public IHttpActionResult CreateUser(User user)
+        [Route("api/user/create")]
+        public IHttpActionResult CreateUser([FromBody] User user)
         {
             if (string.IsNullOrEmpty(user.Username))
                 return BadRequest("A username must exist");

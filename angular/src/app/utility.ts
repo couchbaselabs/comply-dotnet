@@ -12,7 +12,7 @@ export class Utility {
     }
 
     makePostRequest(url: string, params: Array<string>, body: Object, query?: Object) {
-        var fullUrl: string = url;
+        var fullUrl: string = "http://localhost:54273" + url;
         if(params && params.length > 0) {
             let encodedParams: Array<string> = [];
             for(let i = 0; i < params.length; i++) {
@@ -43,7 +43,7 @@ export class Utility {
     }
 
     makeGetRequest(url: string, params: Array<string>, query?: Object) {
-        var fullUrl: string = url;
+        var fullUrl: string = "http://localhost:54273" + url;
         if(params && params.length > 0) {
             let encodedParams: Array<string> = [];
             for(let i = 0; i < params.length; i++) {
