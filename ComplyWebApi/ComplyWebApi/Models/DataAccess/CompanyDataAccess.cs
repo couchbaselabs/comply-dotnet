@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using ComplyWebApi.Models.DocumentModels;
 using Couchbase;
 using Couchbase.Core;
 using Couchbase.N1QL;
@@ -16,7 +18,7 @@ namespace ComplyWebApi.Models.DataAccess
 
         public List<Company> GetCompanyById(string companyId)
         {
-            var queryStr = "SELECT c.* FROM `" + _bucket.Name + @"` AS companies
+            var queryStr = "SELECT companies.* FROM `" + _bucket.Name + @"` AS companies
                            WHERE _type = 'Company' AND META(companies).id = $1";
             var query = QueryRequest.Create(queryStr);
             query.AddPositionalParameter(companyId);
@@ -26,7 +28,7 @@ namespace ComplyWebApi.Models.DataAccess
 
         public List<Company> GetCompanies()
         {
-            var queryStr = "SELECT _id, _type, name, address, phone, website FROM `" + _bucket.Name + "` WHERE _type = 'Company'";
+            var queryStr = "SELECT c.* FROM `" + _bucket.Name + "` c WHERE _type = 'Company'";
             var query = QueryRequest.Create(queryStr);
             return ExtractResultOrThrow(_bucket.Query<Company>(query));
         }

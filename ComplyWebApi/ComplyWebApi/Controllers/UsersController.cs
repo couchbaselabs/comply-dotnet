@@ -6,6 +6,7 @@ using System.Security.Authentication;
 using System.Web.Http;
 using ComplyWebApi.Models;
 using ComplyWebApi.Models.DataAccess;
+using ComplyWebApi.Models.DocumentModels;
 using Couchbase;
 
 namespace ComplyWebApi.Controllers

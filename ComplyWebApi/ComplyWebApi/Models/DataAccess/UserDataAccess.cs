@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Authentication;
+using ComplyWebApi.Models.DocumentModels;
 using Couchbase;
 using Couchbase.Core;
 using Couchbase.N1QL;

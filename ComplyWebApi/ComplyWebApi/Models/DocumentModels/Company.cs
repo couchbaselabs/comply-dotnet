@@ -1,4 +1,4 @@
-﻿namespace ComplyWebApi.Models
+﻿namespace ComplyWebApi.Models.DocumentModels
 {
     public class Company
     {

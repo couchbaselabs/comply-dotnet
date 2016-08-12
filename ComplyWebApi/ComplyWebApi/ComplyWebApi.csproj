@@ -109,21 +109,24 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\DocumentModels\Company.cs" />
     <Compile Include="Models\DataAccess\BaseDataAccess.cs" />
     <Compile Include="Models\DataAccess\CompanyDataAccess.cs" />
+    <Compile Include="Models\DataAccess\ProjectDataAccess.cs" />
+    <Compile Include="Models\DataAccess\TaskDataAccess.cs" />
     <Compile Include="Models\DataAccess\UserDataAccess.cs" />
-    <Compile Include="Models\Project.cs" />
-    <Compile Include="Models\ProjectTask.cs" />
-    <Compile Include="Models\ProjectUser.cs" />
-    <Compile Include="Models\TaskAddHistory.cs" />
-    <Compile Include="Models\TaskAssignUser.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserTask.cs" />
+    <Compile Include="Models\DocumentModels\Project.cs" />
+    <Compile Include="Models\EditModels\ProjectAddUser.cs" />
+    <Compile Include="Models\DocumentModels\Task.cs" />
+    <Compile Include="Models\EditModels\TaskAddHistory.cs" />
+    <Compile Include="Models\EditModels\TaskAssignUser.cs" />
+    <Compile Include="Models\DocumentModels\User.cs" />
+    <Compile Include="Models\EditModels\UserTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,8 +3,8 @@ using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using ComplyWebApi.Models;
 using ComplyWebApi.Models.DataAccess;
+using ComplyWebApi.Models.DocumentModels;
 using Couchbase;
 
 namespace ComplyWebApi.Controllers
@@ -20,7 +20,7 @@ namespace ComplyWebApi.Controllers
         }
 
         [HttpGet]
-        [Route("company/get/{companyId}")]
+        [Route("company/get/{*companyId}")]
         public IHttpActionResult GetCompanyById(string companyId)
         {
             if(string.IsNullOrEmpty(companyId))
