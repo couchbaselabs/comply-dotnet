@@ -39,7 +39,7 @@ namespace ComplyWebApi.Controllers
 
         [HttpPost]
         [Route("api/company/create")]
-        public IHttpActionResult CreateCompany(Company company)
+        public IHttpActionResult CreateCompany([FromBody] Company company)
         {
             if (string.IsNullOrEmpty(company.Website))
                 return BadRequest("A website must exist");

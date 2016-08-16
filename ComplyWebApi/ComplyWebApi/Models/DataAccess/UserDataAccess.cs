@@ -24,6 +24,7 @@ namespace ComplyWebApi.Models.DataAccess
                             FROM `" + _bucket.Name + @"` AS users
                             WHERE _type = 'User' AND META(users).id = $1";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(userId);
             var queryResult = _bucket.Query<User>(query);
             return ExtractResultOrThrow(queryResult);
@@ -32,7 +33,9 @@ namespace ComplyWebApi.Models.DataAccess
         public List<User> GetUsers()
         {
             var queryStr = "SELECT u.* FROM `" + _bucket.Name + @"` u WHERE _type = 'User'";
-            var queryResult = _bucket.Query<User>(QueryRequest.Create(queryStr));
+            var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
+            var queryResult = _bucket.Query<User>(query);
             return ExtractResultOrThrow(queryResult);
         }
 
@@ -43,7 +46,7 @@ namespace ComplyWebApi.Models.DataAccess
         public User Login(string username, string password)
         {
             var user = _bucket.Get<User>(username);
-            if (user.Value == null || !user.Success)
+            if (!user.Success)
                 throw new ArgumentException("The username provided does not exist or was not correct");
 
             if (BCryptHelper.CheckPassword(password, user.Value.Password))
@@ -52,18 +55,18 @@ namespace ComplyWebApi.Models.DataAccess
             throw new AuthenticationException("The password provided is not correct");
         }
 
-        public object CreateUser(User user)
+        public User CreateUser(User user)
         {
             user.Password = BCryptHelper.HashPassword(user.Password, BCryptHelper.GenerateSalt());
             user._type = "User";
-            user._id = user.Username;
+            user._id = user.Username;   
             var userDocument = new Document<User>
             {
                 Id = user.Username,
                 Content = user 
             };
             _bucket.Insert(userDocument);
-            return userDocument;
+            return user;
         }
     }
 }

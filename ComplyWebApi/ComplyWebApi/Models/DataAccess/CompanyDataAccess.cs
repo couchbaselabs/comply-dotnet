@@ -21,6 +21,7 @@ namespace ComplyWebApi.Models.DataAccess
             var queryStr = "SELECT companies.* FROM `" + _bucket.Name + @"` AS companies
                            WHERE _type = 'Company' AND META(companies).id = $1";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(companyId);
             var queryResult = _bucket.Query<Company>(query);
             return ExtractResultOrThrow(queryResult);
@@ -30,6 +31,7 @@ namespace ComplyWebApi.Models.DataAccess
         {
             var queryStr = "SELECT c.* FROM `" + _bucket.Name + "` c WHERE _type = 'Company'";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             return ExtractResultOrThrow(_bucket.Query<Company>(query));
         }
 

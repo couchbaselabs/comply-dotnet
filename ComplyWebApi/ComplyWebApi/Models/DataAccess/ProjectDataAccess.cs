@@ -30,6 +30,7 @@ namespace ComplyWebApi.Models.DataAccess
                             FROM `" + _bucket.Name + @"` c
                             WHERE c._id = $1";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(projectId);
             var queryResult = _bucket.Query<dynamic>(query);
             return ExtractResultOrThrow(queryResult);
@@ -39,6 +40,7 @@ namespace ComplyWebApi.Models.DataAccess
         {
             var queryStr = "SELECT p.* FROM `" + _bucket.Name + "` p WHERE _type = 'Project' and owner = $1";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(ownerId);
             var queryResult = _bucket.Query<Project>(query);
             return ExtractResultOrThrow(queryResult);
@@ -48,6 +50,7 @@ namespace ComplyWebApi.Models.DataAccess
         {
             var queryStr = "SELECT projects.* FROM `" + _bucket.Name + "` AS projects WHERE _type = 'Project'";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             return ExtractResultOrThrow(_bucket.Query<Project>(query));
         }
 
@@ -55,6 +58,7 @@ namespace ComplyWebApi.Models.DataAccess
         {
             var queryStr = "SELECT p.* FROM `" + _bucket.Name + "` p WHERE _type = 'Project' AND ANY x IN users SATISFIES x = $1 END";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(userId);
             var queryResult = _bucket.Query<Project>(query);
             return ExtractResultOrThrow(queryResult);
@@ -79,10 +83,10 @@ namespace ComplyWebApi.Models.DataAccess
         public User ProjectAddUser(string username, string projectId)
         {
             var userDocument = _bucket.Get<User>(username);
-            if(userDocument == null || !userDocument.Success)
+            if(!userDocument.Success)
                 throw new ArgumentException("The user does not exists");
             var projectDocument = _bucket.Get<Project>(projectId);
-            if(projectDocument == null || !projectDocument.Success)
+            if(!projectDocument.Success)
                 throw new ArgumentException("The project does not exist");
 
             var project = projectDocument.Value;

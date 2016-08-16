@@ -1,11 +1,9 @@
 using System;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using ComplyWebApi.Models;
 using ComplyWebApi.Models.DataAccess;
 using ComplyWebApi.Models.DocumentModels;
 using ComplyWebApi.Models.EditModels;
@@ -58,16 +56,9 @@ namespace ComplyWebApi.Controllers
             return Ok(_dataAccess.GetOtherProjectsByUserId(userId));
         }
 
-        [HttpGet]
-        [Route("api/project/getOther")]
-        public IHttpActionResult GetOtherProjects()
-        {
-            return Ok(_dataAccess.GetProjects());
-        }
-
         [HttpPost]
         [Route("api/project/create")]
-        public IHttpActionResult CreateProject(Project project)
+        public IHttpActionResult CreateProject([FromBody] Project project)
         {
             if (string.IsNullOrEmpty(project.Owner))
                 return BadRequest("An owner must exist");
@@ -87,7 +78,7 @@ namespace ComplyWebApi.Controllers
 
         [HttpPost]
         [Route("api/project/addUser")]
-        public IHttpActionResult ProjectAddUser(ProjectAddUser projectAddUser)
+        public IHttpActionResult ProjectAddUser([FromBody] ProjectAddUser projectAddUser)
         {
             if (string.IsNullOrEmpty(projectAddUser.Username))
                 return BadRequest("A username must exist");
@@ -105,6 +96,13 @@ namespace ComplyWebApi.Controllers
             {
                 return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.Conflict, ex.Message));
             }
+        }
+
+        [HttpGet]
+        [Route("api/project/getOther")]
+        public IHttpActionResult GetOtherProjects()
+        {
+            return Ok(_dataAccess.GetProjects());
         }
     }
 }

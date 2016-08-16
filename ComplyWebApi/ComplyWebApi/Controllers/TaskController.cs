@@ -22,7 +22,6 @@ namespace ComplyWebApi.Controllers
             _dataAccess = new TaskDataAccess(bucket);
         }
 
-
         [HttpGet]
         [Route("api/task/get/{taskId}")]
         public IHttpActionResult GetTaskById(string taskId)
@@ -54,7 +53,7 @@ namespace ComplyWebApi.Controllers
 
         [HttpPost]
         [Route("api/task/addUser")]
-        public IHttpActionResult TaskAddUser(TaskAddUser taskUser)
+        public IHttpActionResult TaskAddUser([FromBody] TaskAddUser taskUser)
         {
             if (string.IsNullOrEmpty(taskUser.Username))
                 return BadRequest("A username must exist");
@@ -76,7 +75,7 @@ namespace ComplyWebApi.Controllers
 
         [HttpPost]
         [Route("api/task/assignUser")]
-        public IHttpActionResult TaskAssignUser(TaskAssignUser assignUser)
+        public IHttpActionResult TaskAssignUser([FromBody] TaskAssignUser assignUser)
         {
             if (string.IsNullOrEmpty(assignUser.TaskId))
                 return BadRequest("A task id must exist");
@@ -99,7 +98,7 @@ namespace ComplyWebApi.Controllers
 
         [HttpPost]
         [Route("api/task/addHistory")]
-        public IHttpActionResult TaskAddHistory(TaskAddHistory addHistory)
+        public IHttpActionResult TaskAddHistory([FromBody] TaskAddHistory addHistory)
         {
             if (string.IsNullOrEmpty(addHistory.TaskId))
                 return BadRequest("A task id must exist");

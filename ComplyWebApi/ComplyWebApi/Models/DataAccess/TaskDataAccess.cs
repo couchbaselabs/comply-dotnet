@@ -38,6 +38,7 @@ namespace ComplyWebApi.Models.DataAccess
                             FROM `" + _bucket.Name + @"` p
                             WHERE ANY x IN tasks SATISFIES x = $1 END ";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(taskId);
             var queryResult = _bucket.Query<dynamic>(query);
             return ExtractResultOrThrow(queryResult);
@@ -57,6 +58,7 @@ namespace ComplyWebApi.Models.DataAccess
                             FROM `" + _bucket.Name + @"` c
                             WHERE c.assignedTo = $1";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(userId);
             var queryResult = _bucket.Query<dynamic>(query);
             return ExtractResultOrThrow(queryResult);
@@ -79,7 +81,7 @@ namespace ComplyWebApi.Models.DataAccess
 
             // add task to project
             var projectDocument = _bucket.Get<Project>(projectId);
-            if(projectDocument == null || !projectDocument.Success)
+            if(!projectDocument.Success)
                 throw new ArgumentException("The project id does not exist");
             var project = projectDocument.Value;
             project.Tasks.Add(taskId);
@@ -91,7 +93,7 @@ namespace ComplyWebApi.Models.DataAccess
             _bucket.Upsert(updatedProjectDocument);
 
             // return task with full owner/users information
-            String queryStr = @"SELECT c._id,
+            var queryStr = @"SELECT c._id,
                                         c.createdON,
                                         c.name,
                                         c.description,
@@ -102,6 +104,7 @@ namespace ComplyWebApi.Models.DataAccess
                                 FROM `" + _bucket.Name + @"` c
                                 WHERE c._id = $1";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(taskId);
             var queryResult = _bucket.Query<dynamic>(query);
             return ExtractResultOrThrow(queryResult);
@@ -111,10 +114,10 @@ namespace ComplyWebApi.Models.DataAccess
         {
             // get the task/user documents
             var userDocument = _bucket.Get<User>(username);
-            if(userDocument == null || !userDocument.Success)
+            if(!userDocument.Success)
                 throw new ArgumentException("The user id does not exist");
             var taskDocument = _bucket.Get<Task>(taskId);
-            if(taskDocument == null || !taskDocument.Success)
+            if(!taskDocument.Success)
                 throw new ArgumentException("The task id does not exist");
 
             var user = userDocument.Value;
@@ -138,11 +141,11 @@ namespace ComplyWebApi.Models.DataAccess
         {
             // get documents
             var userDocument = _bucket.Get<User>(userId);
-            if(userDocument == null || !userDocument.Success)
+            if(!userDocument.Success)
                 throw new ArgumentException("The user id does not exist");
 
             var taskDocument = _bucket.Get<Task>(taskId);
-            if (taskDocument == null || !taskDocument.Success)
+            if (!taskDocument.Success)
                 throw new ArgumentException("The task id does not exist");
 
             // update task
@@ -163,7 +166,7 @@ namespace ComplyWebApi.Models.DataAccess
         {
             // get the task
             var taskDocument = _bucket.Get<Task>(addHistory.TaskId);
-            if(taskDocument == null || !taskDocument.Success)
+            if(!taskDocument.Success)
                 throw new ArgumentException("The task id does not exist");
 
             // add a new history item to it
@@ -191,6 +194,7 @@ namespace ComplyWebApi.Models.DataAccess
                             FROM `" + _bucket.Name + @"` c
                             WHERE c._id = $3";
             var query = QueryRequest.Create(queryStr);
+            query.ScanConsistency(ScanConsistency.RequestPlus);
             query.AddPositionalParameter(addHistory.Log);
             query.AddPositionalParameter(createdAt);
             query.AddPositionalParameter(addHistory.UserId);
