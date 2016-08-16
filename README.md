@@ -48,8 +48,8 @@ the WebAPI code in this demo has CORS enabled for any origin).
 Once that change is in place, build the Angular project and start serving it.
 
 ```sh
-ng build —output-path=../public
-ng server
+ng build
+ng serve
 ```
 
 This will be served on http://localhost:4200/
@@ -61,10 +61,6 @@ CREATE PRIMARY INDEX on `comply`
 ```
 
 In a production environment, you would likely have several more secondary indexes to improve performance.
-
-## Running the Project
-
-The web browser should open automatically from Visual Studio, to an address like **http://localhost:12345**.
 
 ## Resources
 
